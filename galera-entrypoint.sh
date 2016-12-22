@@ -55,6 +55,7 @@ if [ -n "$VAR" ]; then
 
 else
     echo "Nobody is online or registered"
+    exit 1
 fi
 
 # Create Galera Config
@@ -62,13 +63,28 @@ config_file="/etc/mysql/conf.d/galera.cnf"
 
 cat <<EOF > $config_file
 [mysqld]
-query_cache_size=0
-binlog_format=ROW
+skip-host-cache
+skip-name-resolve
+skip-external-locking
+bind-address=0.0.0.0
+port=3306
+datadir					=/var/lib/mysql
+tmpdir					=/tmp
+socket					=/var/run/mysqld/mysqld.sock
+
+
 default-storage-engine=innodb
 innodb_autoinc_lock_mode=2
-query_cache_type=0
-bind-address=0.0.0.0
+innodb-flush-log-at-trx-commit=0
+
+binlog_format=ROW
 wsrep_on=ON
+query_cache_size=0
+query_cache_type=0
+
+# Error Logging
+log-error	=/dev/stderr
+log_warnings		= 3
 
 # Galera Provider Configuration
 wsrep_provider=/usr/lib/libgalera_smm.so
@@ -80,6 +96,19 @@ wsrep_cluster_address = $CLUSTER_ADDRESS
 # Galera Synchronization Congifuration
 wsrep_sst_auth = "$GALERA_USER:$GALERA_PASS" 
 wsrep_sst_method = rsync
+
+# For generating SSL certificates use "tinyca".
+#ssl-ca	=/etc/mysql/ssl/ca-cert.pem
+#ssl-cert=/etc/mysql/ssl/server-cert.pem
+#ssl-key	=/etc/mysql/ssl/server-key.pem
+
+[mysql_safe]
+log-error	=/dev/stderr
+log_warnings= 3
+pid-file	=/var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+nice		= 0
+
 EOF
 
 if [ "$start_new_cluster" = true ] ; then
