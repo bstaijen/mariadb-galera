@@ -15,18 +15,24 @@ This project consists out of one docker image. The docker image depends on consu
 - `CONSUL_HOST` - Link to consul instance. eg: `CONSUL_HOST=consul:8500`
 - `SERVICE_NAME` - Name of the service. eg: `SERVICE_NAME=galera-db`
 - `SERVICE_TAGS` - Tags for the service. eg: `SERVICE_TAGS=galera-db-tag`
+- `DEBUG` - For debugging shell scipt. eg: `DEBUG=true`
 
 ## Usage
 
 ### With Docker Swarm and Docker Compose
+Tested on: `Docker Client Version: 1.12.3` and `Docker Server Version: swarm/1.2.5` and `Docker Compose Version: 1.8.1`
+
 - `docker-compose up -d --force-recreate`
 - `docker-compose scale registrator=7` - Or any number of machines you have.
 - I suggest waiting for 15-30 seconds so the first database server can configure itself.
 - `docker-compose scale db=3`
 - I suggest waiting a few seconds so the nodes can come online.
-- `docker exec -it <container_id> bash`
+- `docker exec -it <container_id> bash` - Reokace <container_id> with the id of your database container
 - `mysql -uroot -ppassword`
-- `SHOW STATUS LIKE 'wsrep_cluster_size';`
+- `SHOW STATUS LIKE 'wsrep_cluster_size';` - The value of wsrep_cluster_size should be equal to the number of db instances
+
+## debugging
+- TODO
 
 ### With Kubernetes
 - TODO
@@ -37,5 +43,18 @@ This project consists out of one docker image. The docker image depends on consu
 # Feedback & Issues
 - TODO
 
-# License
+# License?
 - TODO
+
+# To Do List
+- Add Galera Arbitrator
+- Write blog posts about using Auto Clustering a MariaDB Server
+- Research Security & Generating SSL Certificates
+- Research using [Flocker](https://clusterhq.com/flocker/introduction/) for data persistence
+- Research Data Backups & Data Peristency & Data Recovery
+- Research possibilities of replacing [mariadb-disover-tool](https://github.com/bstaijen/mariadb-discover-tool)  with [Consul-Template](https://github.com/hashicorp/consul-template)
+    - if using [mariadb-disover-tool](https://github.com/bstaijen/mariadb-discover-tool) then also support etcd and zookeeper
+- Research using MaxScale
+- Research Loadbalancing
+- Research Healthchecks
+- Research Monitoring
