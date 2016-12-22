@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y galera-arbitrator-3 && \
     rm -rf /var/lib/apt/lists/* 
 
 COPY galera-entrypoint.sh /
-COPY scripts/ /docker-entrypoint-initdb.d/.
+COPY tools/ /docker-entrypoint-initdb.d/.
 
 RUN chown mysql:mysql /etc/mysql/my.cnf
 
