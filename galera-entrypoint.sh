@@ -1,7 +1,8 @@
 #!/bin/bash
 
+[ "$DEBUG" == 'true' ] && set -x
+
 set -e
-set -x
 
 COMMAND=${1:-'mysqld'}
 
@@ -44,17 +45,17 @@ if [ -n "$VAR" ]; then
     
     if [[ $VAR == *","* ]]; then
         # 
-        echo "Join cluster and set gcomm:// string to $VAR"
+        echo "Join cluster and set gcomm:// to $VAR"
         CLUSTER_ADDRESS="gcomm://$VAR?pc.wait_prim=no"
     else 
         # BOOTSTRAP
-        echo "Bootstrap"
+        echo "Bootstrap service"
         start_new_cluster=true;
         CLUSTER_ADDRESS="gcomm://";
     fi
 
 else
-    echo "Nobody is online or registered"
+    echo "No service is online or registered"
     exit 1
 fi
 
@@ -66,49 +67,48 @@ cat <<EOF > $config_file
 skip-host-cache
 skip-name-resolve
 skip-external-locking
-bind-address=0.0.0.0
-port=3306
-datadir					=/var/lib/mysql
-tmpdir					=/tmp
-socket					=/var/run/mysqld/mysqld.sock
+bind-address                    = 0.0.0.0
+port                            = 3306
+datadir					        = /var/lib/mysql
+tmpdir					        = /tmp
+socket					        = /var/run/mysqld/mysqld.sock
 
 
-default-storage-engine=innodb
-innodb_autoinc_lock_mode=2
-innodb-flush-log-at-trx-commit=0
+default-storage-engine          = innodb
+innodb_autoinc_lock_mode        = 2
+innodb-flush-log-at-trx-commit  = 0
 
-binlog_format=ROW
-wsrep_on=ON
-query_cache_size=0
-query_cache_type=0
+binlog_format                   = ROW
+wsrep_on                        = ON
+query_cache_size                = 0
+query_cache_type                = 0
 
 # Error Logging
-log-error	=/dev/stderr
-log_warnings		= 3
+log-error	                    = /dev/stderr
+log_warnings		            = 3
 
 # Galera Provider Configuration
-wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_provider                  = /usr/lib/libgalera_smm.so
 
 # Galera Cluster Configuration
-wsrep_cluster_name = "$CLUSTER_NAME" 
-wsrep_cluster_address = $CLUSTER_ADDRESS
+wsrep_cluster_name              = "$CLUSTER_NAME" 
+wsrep_cluster_address           = $CLUSTER_ADDRESS
 
 # Galera Synchronization Congifuration
-wsrep_sst_auth = "$GALERA_USER:$GALERA_PASS" 
-wsrep_sst_method = rsync
+wsrep_sst_auth                  = "$GALERA_USER:$GALERA_PASS" 
+wsrep_sst_method                = rsync
 
-# For generating SSL certificates use "tinyca".
-#ssl-ca	=/etc/mysql/ssl/ca-cert.pem
-#ssl-cert=/etc/mysql/ssl/server-cert.pem
-#ssl-key	=/etc/mysql/ssl/server-key.pem
+# TODO
+#ssl-ca	                        = /etc/mysql/ssl/ca-cert.pem
+#ssl-cert                       = /etc/mysql/ssl/server-cert.pem
+#ssl-key	                    = /etc/mysql/ssl/server-key.pem
 
 [mysql_safe]
-log-error	=/dev/stderr
-log_warnings= 3
-pid-file	=/var/run/mysqld/mysqld.pid
-socket		= /var/run/mysqld/mysqld.sock
-nice		= 0
-
+log-error	                    = /dev/stderr
+log_warnings                    = 3
+pid-file	                    = /var/run/mysqld/mysqld.pid
+socket		                    = /var/run/mysqld/mysqld.sock
+nice		                    = 0
 EOF
 
 if [ "$start_new_cluster" = true ] ; then
