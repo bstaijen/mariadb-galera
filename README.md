@@ -1,5 +1,5 @@
-# Docker Container for Auto Clustering and Replication MariaDB Server
-This is a demo for running a simplified, auto clustering and replication MariaDB Server in Docker.
+# Docker Container for Auto Clustering and Replication a MariaDB Server
+This is a demo for running a simplified, auto clustering and replication MariaDB Server on Docker.
 
 ## How does it work?
 This project consists out of one docker image. The docker image depends on consul for service discovery. The demo uses [gliderlabs/registrator](https://github.com/gliderlabs/registrator) for its service registration. If set-up in the right way the database will cluster and replicate itself.
@@ -18,7 +18,7 @@ This project consists out of one docker image. The docker image depends on consu
 
 ## Usage
 
-### Docker Swarm and Docker Compose
+### With Docker Swarm and Docker Compose
 - `docker-compose up -d --force-recreate`
 - `docker-compose scale registrator=7` - Or any number of machines you have.
 - I suggest waiting for 15-30 seconds so the first database server can configure itself.
@@ -28,10 +28,10 @@ This project consists out of one docker image. The docker image depends on consu
 - `mysql -uroot -ppassword`
 - `SHOW STATUS LIKE 'wsrep_cluster_size';`
 
-### Kubernetes
+### With Kubernetes
 - TODO
 
-### One machine
+### On One machine
 - TODO
 
 # Feedback & Issues
