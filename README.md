@@ -5,9 +5,9 @@ This is a demo for running a simplified, auto clustering and replication MariaDB
 This project consists out of one docker image. The docker image depends on consul for service discovery. The demo uses [gliderlabs/registrator](https://github.com/gliderlabs/registrator) for its service registration. If set-up in the right way the database will cluster and replicate itself.
 
 ## Requirements
-- `[gliderlabs/docker-consul](https://github.com/gliderlabs/docker-consul)` - For MariaDB Server Discovery
-- `[gliderlabs/registrator](https://github.com/gliderlabs/registrator)` - For Automatic Server Registration
-- `[mariadb-disover-tool](https://github.com/bstaijen/mariadb-discover-tool)` - For querying Consul Registry
+- [gliderlabs/docker-consul](https://github.com/gliderlabs/docker-consul) - For MariaDB Server Discovery
+- [gliderlabs/registrator](https://github.com/gliderlabs/registrator) - For Automatic Server Registration
+- [mariadb-disover-tool](https://github.com/bstaijen/mariadb-discover-tool) - For querying Consul Registry
 
 ## Environment Arguments
 - `MYSQL_ROOT_PASSWORD` - Root user password. eg: `MYSQL_ROOT_PASSWORD=password`
