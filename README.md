@@ -44,10 +44,7 @@ Tested with: `Docker Client Version: 1.12.3` and `Docker Server Version: swarm/1
 # Feedback & Issues
 - TODO
 
-# License?
-- TODO
-
-# To Do List
+## To Do List
 - Add Galera Arbitrator
 - Write blog posts about using Auto Clustering a MariaDB Server
 - Research Security & Generating SSL Certificates
