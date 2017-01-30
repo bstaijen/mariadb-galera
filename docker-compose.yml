@@ -10,7 +10,7 @@ services:
         command: "-server -bootstrap -ui-dir /ui"
         restart: always
     db:
-        image: bstaijen/mariadb-galera-cluster
+        image: bstaijen/mariadb-galera-cluster:0.1
         restart: always
         environment:
         - "MYSQL_ROOT_PASSWORD=password"

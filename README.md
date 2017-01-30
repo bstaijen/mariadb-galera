@@ -1,6 +1,6 @@
 # Docker Container for Auto Clustering and Replication a MariaDB Server
 This is a demo for running a replicating and auto clustering MariaDB Server with Docker.
-Docker hub : [bstaijen/mariadb-galera-cluster](https://hub.docker.com/r/bstaijen/mariadb-galera-cluster/)
+Docker hub : [bstaijen/mariadb-galera-cluster](https://hub.docker.com/r/bstaijen/mariadb-galera-cluster/). Since this project is only for demo purposes all releases will be tagged as a pre-release.
 
 ## How does it work?
 This project consists out of one docker image. The docker image depends on consul for service discovery. The demo uses [gliderlabs/registrator](https://github.com/gliderlabs/registrator) for its service registration. If set-up in the right way the database will start replicating and clustring itself.

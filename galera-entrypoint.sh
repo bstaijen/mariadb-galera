@@ -4,62 +4,51 @@
 
 set -e
 
+# prepend mysqld to arguments
 COMMAND=${1:-'mysqld'}
 
-# var
+# var start_new_cluster: decides if we should bootstrap or join cluster.
 start_new_cluster=false
 
+# env CONSUL_HOST is mandatory
 if [[ -z ${CONSUL_HOST} ]]; then
-  echo >&2 'error: CONSUL_HOST is not specified '
+  echo >&2 'error: CONSUL_HOST environment variable is mandatory'
   exit 1
 fi
 
+# env SERVICE_NAME is mandatory
 if [[ -z ${SERVICE_NAME} ]]; then
-  echo >&2 'error: SERVICE_NAME is not specified '
+  echo >&2 'error: SERVICE_NAME environment variable is mandatory'
   exit 1
 fi
 
-# Save IPs to VAR
-VAR="`./docker-entrypoint-initdb.d/discovery-tool -h=${CONSUL_HOST} -servicename=${SERVICE_NAME}-3306`"
-echo $VAR
+# give the registrator some time to register the container. 
+sleep 10
 
-# Give the registrator some time to register the container
-for i in {15..0}; do
-    echo "Discovery in progress... $i"
+# Save IPs to ip_addresses
+ip_addresses="`./docker-entrypoint-initdb.d/discovery-tool -address=${CONSUL_HOST} -service=${SERVICE_NAME}-3306`"
+echo $ip_addresses
 
-    VAR2="`./docker-entrypoint-initdb.d/discovery-tool -h=${CONSUL_HOST} -servicename=${SERVICE_NAME}-3306`"
-    if [ "$VAR" = "$VAR2" ]; then 
-        sleep 1
-    else
-        # TODO : Think about running for 30sec without break.
-        # Because user might scale to a number of N containers and
-        # we want to be able to wait for all the registrations to finish.
-        echo "New registered containers found!"  
-        VAR="`./docker-entrypoint-initdb.d/discovery-tool -h=${CONSUL_HOST} -servicename=${SERVICE_NAME}-3306`"
-        break
-    fi;
-
-done
-
-if [ -n "$VAR" ]; then
+if [ -n "$ip_addresses" ]; then
     
-    if [[ $VAR == *","* ]]; then
-        # 
-        echo "Join cluster and set gcomm:// to $VAR"
-        CLUSTER_ADDRESS="gcomm://$VAR?pc.wait_prim=no"
+    if [[ $ip_addresses == *","* ]]; then
+        # join cluster
+        echo "Join cluster and set gcomm:// to $ip_addresses"
+        CLUSTER_ADDRESS="gcomm://$ip_addresses?pc.wait_prim=no"
     else 
-        # BOOTSTRAP
+        # bootstrap cluster
         echo "Bootstrap service"
         start_new_cluster=true;
         CLUSTER_ADDRESS="gcomm://";
     fi
 
 else
-    echo "No service is online or registered"
+    # there went something wrong because there is no service available. Make sure that consul is running.
+    echo "No service is online or registered. Please make sure that consul is available and running"
     exit 1
 fi
 
-# Create Galera Config
+# create galera config
 config_file="/etc/mysql/conf.d/galera.cnf"
 
 cat <<EOF > $config_file
@@ -84,7 +73,7 @@ query_cache_size                = 0
 query_cache_type                = 0
 
 # Error Logging
-log-error	                    = /dev/stderr
+log-error                       = /dev/stderr
 log_warnings		            = 3
 
 # Galera Provider Configuration
@@ -111,6 +100,7 @@ socket		                    = /var/run/mysqld/mysqld.sock
 nice		                    = 0
 EOF
 
+# logic to bootstrap or join a cluster.
 if [ "$start_new_cluster" = true ] ; then
     exec /docker-entrypoint.sh "$@" --wsrep-new-cluster
 else
