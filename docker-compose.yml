@@ -1,5 +1,25 @@
 version: '2'
 services:
+    db:
+        image: bstaijen/mariadb-galera-cluster:0.2
+        restart: always
+        environment:
+        - "MYSQL_ROOT_PASSWORD=password"
+        - "CLUSTER_NAME=galeracluster"
+        - "CONSUL_HOST=consul"
+        - "CONSUL_PORT=8500"
+        - "SERVICE_NAME=test-galera-db"
+        - "SERVICE_TAGS=galera-db"
+        - "DEBUG=true"
+        - "affinity:com.mariadb.host!=galeracluster"
+        depends_on: 
+            - consul
+        labels:
+        - "com.mariadb.host=galeracluster"
+        ports:
+        - 3306:3306
+        - 4567-4568:4567-4568
+        - 4444:4444
     consul:
         image: "progrium/consul:latest"
         hostname: "consul"
@@ -9,25 +29,11 @@ services:
         - "8600:53/udp"
         command: "-server -bootstrap -ui-dir /ui"
         restart: always
-    db:
-        image: bstaijen/mariadb-galera-cluster:0.1
-        restart: always
-        environment:
-        - "MYSQL_ROOT_PASSWORD=password"
-        - "CLUSTER_NAME=galeracluster"
-        - "CONSUL_HOST=consul:8500"
-        - "SERVICE_NAME=test-galera-db"
-        - "SERVICE_TAGS=galera-db"
-        - "affinity:com.mariadb.host!=galeracluster"
-        labels:
-        - "com.mariadb.host=galeracluster"
-        ports:
-        - 3306:3306
-        - 4567-4568:4567-4568
-        - 4444:4444
     registrator:
         image: gliderlabs/registrator:master
         hostname: registrator
+        depends_on: 
+            - consul
         volumes:
         - "/var/run/docker.sock:/tmp/docker.sock"
         command: -internal consul://consul:8500

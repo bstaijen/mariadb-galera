@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function init_confd {
+  # wait for confd to run once and install initial templates
+  until confd -onetime ${CONFD_OPTIONS}; do
+    echo "==> database: waiting for confd to write initial templates..."
+    sleep 5  # sleep for 5
+  done
+}
+
+function configure_env() {
+    export CONFD_OPTIONS="-config-file /app/confd.toml -backend env"
+}
+
+function configure_consul() {
+    export CONFD_OPTIONS="-config-file /app/confd.toml -backend consul -node $CONSUL"
+}

@@ -1,0 +1,9 @@
+[template]
+src   = "cluster.cnf"
+dest  = "/etc/mysql/conf.d/cluster.cnf"
+owner = "root"
+group = "root"
+mode  = "0644"
+keys = [
+]
+reload_cmd = "ps axu | grep '/usr/sbin/mysqld' | grep -v grep | awk '{ print $2 }'"

@@ -1,0 +1,46 @@
+[mysqld]
+skip-host-cache
+skip-name-resolve
+skip-external-locking
+bind-address                    = 0.0.0.0
+port                            = 3306
+datadir					        = /var/lib/mysql
+tmpdir					        = /tmp
+socket					        = /var/run/mysqld/mysqld.sock
+
+
+default-storage-engine          = innodb
+innodb_autoinc_lock_mode        = 2
+innodb-flush-log-at-trx-commit  = 0
+
+binlog_format                   = ROW
+wsrep_on                        = ON
+query_cache_size                = 0
+query_cache_type                = 0
+
+# Error Logging
+log-error                       = /dev/stderr
+log_warnings		            = 3
+
+# Galera Provider Configuration
+wsrep_provider                  = /usr/lib/libgalera_smm.so
+
+# Galera Cluster Configuration
+wsrep_cluster_name              = "{{ getenv "CLUSTER_NAME" }}"
+wsrep_cluster_address           = "{{ getenv "CLUSTER_ADDRESS" }}"
+
+# Galera Synchronization Congifuration
+wsrep_sst_auth                  = {{ getenv "REP_USER" }}:{{ getenv "REP_PASS" }}
+wsrep_sst_method                = rsync
+
+# TODO
+#ssl-ca	                        = /etc/mysql/ssl/ca-cert.pem
+#ssl-cert                       = /etc/mysql/ssl/server-cert.pem
+#ssl-key	                    = /etc/mysql/ssl/server-key.pem
+
+[mysql_safe]
+log-error	                    = /dev/stderr
+log_warnings                    = 3
+pid-file	                    = /var/run/mysqld/mysqld.pid
+socket		                    = /var/run/mysqld/mysqld.sock
+nice		                    = 0
