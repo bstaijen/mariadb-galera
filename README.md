@@ -41,18 +41,9 @@ Tested with: `Docker Client Version: 1.12.3` and `Docker Server Version: swarm/1
 ### On One machine
 - TODO
 
-# Feedback & Issues
-- TODO
+## Acknowledgements
+- Thanks to [alvinr](https://github.com/alvinr) for letting me use his [repo](https://github.com/alvinr/docker-demo/tree/master/mariadb/vote/prod/galera) as a first inspiration.
+- Thanks to [paulczar](https://github.com/paulczar) for using his [repo](https://github.com/paulczar/docker-percona_galera/tree/master/database) and getting the inspiration for using [confd](https://github.com/kelseyhightower/confd).
 
-## To Do List
-- Add Galera Arbitrator
-- Write blog posts about using Auto Clustering a MariaDB Server
-- Research Security & Generating SSL Certificates
-- Research using [Flocker](https://clusterhq.com/flocker/introduction/) for data persistence
-- Research Data Backups & Data Peristency & Data Recovery
-- Research possibilities of replacing [mariadb-disover-tool](https://github.com/bstaijen/mariadb-discover-tool)  with [Consul-Template](https://github.com/hashicorp/consul-template)
-    - if using [mariadb-disover-tool](https://github.com/bstaijen/mariadb-discover-tool) then also support etcd and zookeeper
-- Research using MaxScale
-- Research Loadbalancing
-- Research Healthchecks
-- Research Monitoring
+# Feedback & Issues
+- Feel free to report bugs or suggestions through the Github issues page.
