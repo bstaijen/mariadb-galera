@@ -1,9 +1,9 @@
 # Docker Container for Auto Clustering and Replication a MariaDB Server
 This is a demo for running a replicating and auto clustering MariaDB Server with Docker.
-Docker hub : [bstaijen/mariadb-galera-cluster](https://hub.docker.com/r/bstaijen/mariadb-galera-cluster/). Since this project is only for demo purposes all releases will be tagged as a pre-release.
+Docker hub : [bstaijen/mariadb-galera-cluster](https://hub.docker.com/r/bstaijen/mariadb-galera-cluster/). Since this project is only for demo purposes all releases will be tagged as pre-releases.
 
 ## How does it work?
-This project consists out of one docker image. The docker image depends on consul for service discovery. The demo uses [gliderlabs/registrator](https://github.com/gliderlabs/registrator) for its service registration. If set-up in the right way the database will start replicating and clustring itself.
+This project consists out of one docker image. The docker image depends on consul or etcd for service discovery. The demo uses [gliderlabs/registrator](https://github.com/gliderlabs/registrator) for its service registration. If set-up in the right way the database will start replicating and clustring itself.
 
 ## Requirements
 - [gliderlabs/docker-consul](https://github.com/gliderlabs/docker-consul) - For MariaDB Server Discovery
@@ -32,18 +32,12 @@ Tested with: `Docker Client Version: 1.12.3` and `Docker Server Version: swarm/1
 - `mysql -uroot -ppassword`
 - `SHOW STATUS LIKE 'wsrep_cluster_size';` - The value of wsrep_cluster_size should be equal to the number of db instances
 
-## debugging
-- TODO
-
-### With Kubernetes
-- TODO
-
-### On One machine
-- TODO
-
 ## Acknowledgements
 - Thanks to [alvinr](https://github.com/alvinr) for letting me use his [repo](https://github.com/alvinr/docker-demo/tree/master/mariadb/vote/prod/galera) as a first inspiration.
 - Thanks to [paulczar](https://github.com/paulczar) for using his [repo](https://github.com/paulczar/docker-percona_galera/tree/master/database) and getting the inspiration for using [confd](https://github.com/kelseyhightower/confd).
 
-# Feedback & Issues
+## Feedback & Issues
 - Feel free to report bugs or suggestions through the Github issues page.
+
+## Next steps
+Check out the [docs directory](docs) for more docs.

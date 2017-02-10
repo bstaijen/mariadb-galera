@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# run confd and create the galera cnf file and the cluster_member.txt
 function init_confd {
   # wait for confd to run once and install initial templates
   until confd -onetime ${CONFD_OPTIONS}; do
@@ -8,10 +9,30 @@ function init_confd {
   done
 }
 
+# Extract all members from cluster_member.txt file and save them as a csv in CLUSTER_MEMBERS
+function cluster_members() {
+  CLUSTER_MEMBERS=
+  LIST=
+  for server in $(cat /app/cluster_members.txt); do
+      # does not check if host is online!
+      LIST+="$server,"
+  done
+  export CLUSTER_MEMBERS=$(echo $LIST | sed 's/,$//')
+}
+
+# Create configuration only using environment variables.
 function configure_env() {
     export CONFD_OPTIONS="-config-file /app/confd.toml -backend env"
 }
 
+# Create configuration for consul
 function configure_consul() {
+    export CONSUL="$CONSUL_HOST:$CONSUL_PORT"
     export CONFD_OPTIONS="-config-file /app/confd.toml -backend consul -node $CONSUL"
+}
+
+# Create configuration for etcd
+function configure_etcd() {
+  export ETCD="$ETCD_HOST:$ETCD_PORT"
+  export CONFD_OPTIONS="-node http://$ETCD -config-file /app/confd.toml -backend etcd"
 }

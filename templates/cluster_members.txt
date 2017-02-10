@@ -1,0 +1,3 @@
+{{range $index, $server := getvs "/test-galera-db-3306/*"}}{{ $arr := split $server ":" }}
+{{ index $arr 0 }}
+{{ end }}
