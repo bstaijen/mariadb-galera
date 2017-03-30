@@ -1,3 +1,4 @@
+Work in progress..
 # Docker Container for Auto Clustering and Replication a MariaDB Server
 This is a demo for running a replicating and auto clustering MariaDB Server with Docker.
 Docker hub : [bstaijen/mariadb-galera-cluster](https://hub.docker.com/r/bstaijen/mariadb-galera-cluster/). Since this project is only for demo purposes all releases will be tagged as pre-releases.
